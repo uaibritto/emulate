@@ -1,0 +1,84 @@
+{
+    "name": "viken",
+    "displayName": "Viken",
+    "version": "0.3.0",
+    "description": "Syntax highlighting, IntelliSense, and diagnostics for Viken files (.vk, .viken)",
+    "categories": [
+        "Programming Languages",
+        "Snippets"
+    ],
+    "keywords": [
+        "cursor",
+        "dsl",
+        "snippets",
+        "viken",
+        "vikyn/viken",
+        "vscode"
+    ],
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/uaibritto/viken",
+        "directory": "packages/extension"
+    },
+    "publisher": "uaibritto",
+    "type": "module",
+    "main": "./dist/extension.cjs",
+    "scripts": {
+        "build": "tsdown",
+        "vscode:prepublish": "bun run build",
+        "package": "vsce package --no-dependencies",
+        "test": "bun test",
+        "clean": "rm -rf dist"
+    },
+    "dependencies": {
+        "@vikyn/viken": "workspace:*"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.75.0",
+        "@vscode/vsce": "^4.0.0"
+    },
+    "contributes": {
+        "languages": [
+            {
+                "id": "viken",
+                "aliases": [
+                    "Viken",
+                    "viken"
+                ],
+                "extensions": [
+                    ".vk",
+                    ".viken"
+                ],
+                "configuration": "./language-configuration.json",
+                "icon": {
+                    "light": "./icons/viking-helmet.svg",
+                    "dark": "./icons/viking-helmet.svg"
+                }
+            }
+        ],
+        "grammars": [
+            {
+                "language": "viken",
+                "scopeName": "source.viken",
+                "path": "./syntaxes/viken.tmLanguage.json",
+                "embeddedLanguages": {
+                    "meta.embedded.block.tsx": "typescriptreact"
+                }
+            }
+        ],
+        "snippets": [
+            {
+                "language": "viken",
+                "path": "./snippets/viken.json"
+            }
+        ]
+    },
+    "activationEvents": [
+        "onLanguage:viken"
+    ],
+    "icon": "./icons/icon.png",
+    "engines": {
+        "vscode": "^1.75.0"
+    }
+}

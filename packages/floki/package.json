@@ -1,0 +1,69 @@
+{
+    "name": "@vikyn/viken",
+    "version": "0.3.0",
+    "description": "DSL and compiler to generate VS Code snippets from .vk/.viken files",
+    "keywords": [
+        "code-snippets",
+        "codegen",
+        "compiler",
+        "cursor",
+        "dsl",
+        "snippets",
+        "typescript",
+        "viken",
+        "vscode"
+    ],
+    "license": "MIT",
+    "author": {
+        "name": "Britto",
+        "email": "uaibritto@icloud.com",
+        "url": "https://github.com/uaibritto"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/uaibritto/viken",
+        "directory": "packages/viken"
+    },
+    "bin": {
+        "viken": "./dist/cli/index.mjs"
+    },
+    "files": [
+        "dist",
+        "README.md",
+        "LICENSE.md"
+    ],
+    "type": "module",
+    "main": "./dist/index.mjs",
+    "types": "./dist/index.d.mts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.mts",
+            "import": "./dist/index.mjs"
+        },
+        "./ast": {
+            "types": "./dist/core/ast.d.mts",
+            "import": "./dist/core/ast.mjs"
+        },
+        "./parser": {
+            "types": "./dist/core/parser.d.mts",
+            "import": "./dist/core/parser.mjs"
+        },
+        "./compiler": {
+            "types": "./dist/core/compiler.d.mts",
+            "import": "./dist/core/compiler.mjs"
+        }
+    },
+    "scripts": {
+        "build": "tsdown",
+        "lint": "oxlint .",
+        "fmt": "oxfmt",
+        "test": "bun test",
+        "clean": "rm -rf dist"
+    },
+    "dependencies": {
+        "commander": "^13.1.0"
+    },
+    "engines": {
+        "node": ">=18"
+    }
+}

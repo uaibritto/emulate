@@ -1,0 +1,10 @@
+source/
+tests/
+tsconfig.json
+tsdown.config.ts
+bun.lock
+*.tsbuildinfo
+coverage/
+.DS_Store
+.vscode/
+.idea/

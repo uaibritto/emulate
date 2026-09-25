@@ -1,0 +1,27 @@
+{
+    "name": "monorepo",
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "build": "turbo run build",
+        "lint": "turbo run lint",
+        "test": "turbo run test",
+        "format": "turbo run fmt",
+        "clean": "turbo run clean"
+    },
+    "devDependencies": {
+        "@types/bun": "^1.4.2",
+        "@types/node": "^26.6.2",
+        "oxfmt": "^0.70.0",
+        "oxlint": "^1.85.0",
+        "tsdown": "^0.23.0",
+        "turbo": "^2.11.2",
+        "typescript": "~6.0.3"
+    },
+    "engines": {
+        "node": ">=22.18.0"
+    },
+    "packageManager": "bun@1.4.2"
+}

@@ -1,0 +1,24 @@
+{
+  "Viken file skeleton": {
+    "prefix": "viken",
+    "description": "Scaffold a new Viken file: @Header + @Snippet + @Body",
+    "body": [
+      "@Header",
+      "    scope: ${1:typescriptreact}",
+      "    output: ${2:snippets.json}",
+      "",
+      "@Snippet",
+      "    prefix: \"${3:prefix}\"",
+      "    name: \"${4:Snippet Name}\"",
+      "    detail: \"${5:Description}\"",
+      "",
+      "    @Body",
+      "        $0"
+    ]
+  },
+  "Viken const": {
+    "prefix": "const",
+    "description": "@Const <name> = <value> declaration",
+    "body": ["@Const ${1:name} = $0"]
+  }
+}

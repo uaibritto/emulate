@@ -1,0 +1,115 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Viken",
+  "scopeName": "source.viken",
+  "fileTypes": ["vk", "viken"],
+  "patterns": [
+    { "include": "#headerBlock" },
+    { "include": "#snippetPropsBlock" },
+    { "include": "#bodyBlock" },
+    { "include": "#constDirective" },
+    { "include": "#comment" },
+    { "include": "#topLevelDirectiveFallback" },
+    { "include": "#bodyDirectiveFallback" }
+  ],
+  "repository": {
+    "comment": {
+      "match": "^\\s*(#.*)$",
+      "name": "comment.line.number-sign.viken"
+    },
+    "topLevelDirectiveFallback": {
+      "comment": "Fallback para @Header/@Snippet/@Const ainda incompletos (ex: '@Const nome' sem '= valor' digitado ainda) — só o '@' recebe destaque. Exige coluna 0 (sem '\\s*' antes do '^'), igual às regras 'de verdade' abaixo: essas três diretivas só existem de marco zero.",
+      "match": "^(@)(Header|Snippet|Const)\\b",
+      "captures": {
+        "1": { "name": "keyword.control.directive.viken" }
+      }
+    },
+    "bodyDirectiveFallback": {
+      "comment": "Fallback para um '@Body' fora do lugar esperado (ex: sem @Snippet). Diferente do fallback acima: @Body NÃO é de marco zero — é sempre indentado por convenção (fica dentro de um @Snippet) — então aceita indentação.",
+      "match": "^\\s*(@)(Body)\\b",
+      "captures": {
+        "1": { "name": "keyword.control.directive.viken" }
+      }
+    },
+    "keyValue": {
+      "match": "^\\s*([A-Za-z_][A-Za-z0-9_-]*)\\s*(:)\\s*(.*)$",
+      "captures": {
+        "1": { "name": "entity.name.tag.viken" },
+        "2": { "name": "punctuation.separator.key-value.viken" },
+        "3": { "patterns": [{ "include": "#value" }] }
+      }
+    },
+    "value": {
+      "patterns": [
+        { "include": "#quotedString" },
+        { "match": "\\b(true|false)\\b", "name": "constant.language.boolean.viken" },
+        { "match": ".+", "name": "string.unquoted.viken" }
+      ]
+    },
+    "quotedString": {
+      "comment": "Valor entre aspas duplas, ex: name: \"React Functional Component\". Espelha o suporte a aspas adicionado ao parser do compilador (evita que uma palavra como 'function' seja lida como código por uma ferramenta futura).",
+      "begin": "\"",
+      "end": "\"",
+      "name": "string.quoted.double.viken",
+      "patterns": [{ "match": "\\\\.", "name": "constant.character.escape.viken" }]
+    },
+    "constDirective": {
+      "comment": "@Const <nome> = <valor> — diretiva de LINHA ÚNICA e de MARCO ZERO: '^' sem '\\s*' antes do '(@)' de propósito, igual ao parser do compilador. Sem isso, um '@Const' indentado dentro de um @Body seria colorido como diretiva Viken em vez de código literal — exatamente o bug que causava a confusão entre o que a gramática mostrava e o que o compilador de fato interpretava.",
+      "match": "^(@)(Const)\\s+([A-Za-z_][A-Za-z0-9_]*)\\s*(=)\\s*(.*)$",
+      "captures": {
+        "1": { "name": "keyword.control.directive.viken" },
+        "3": { "name": "entity.name.constant.viken" },
+        "4": { "name": "keyword.operator.assignment.viken" },
+        "5": { "patterns": [{ "include": "#value" }] }
+      }
+    },
+    "placeholder": {
+      "patterns": [
+        {
+          "comment": "${...} com até 1 nível de aninhamento, ex: ${TM_FILENAME_BASE/(.*)/${1:/capitalize}/}",
+          "match": "\\$\\{(?:[^{}]|\\{[^{}]*\\})*\\}",
+          "name": "variable.parameter.placeholder.viken"
+        },
+        {
+          "match": "\\$[A-Z_][A-Z0-9_]*",
+          "name": "variable.parameter.placeholder.viken"
+        },
+        {
+          "match": "\\$\\d+",
+          "name": "variable.parameter.placeholder.viken"
+        }
+      ]
+    },
+    "headerBlock": {
+      "comment": "@Header é de marco zero: begin/end exigem coluna 0 (sem '\\s*' inicial). O 'end' inclui @Const pelo mesmo motivo do bodyBlock (ver lá).",
+      "begin": "^(@)(Header)\\b",
+      "beginCaptures": {
+        "1": { "name": "keyword.control.directive.viken" }
+      },
+      "end": "(?=^@(?:Header|Snippet|Const)\\b)",
+      "name": "meta.block.header.viken",
+      "patterns": [{ "include": "#comment" }, { "include": "#keyValue" }]
+    },
+    "snippetPropsBlock": {
+      "comment": "Cobre APENAS as propriedades de @Snippet (prefix/name/detail/template). @Snippet em si é de marco zero (begin exige coluna 0). Termina em duas situações bem diferentes: um '@Body' indentado (sempre tolerante à indentação, já que @Body não é de marco zero) OU uma nova diretiva de marco zero (@Header/@Snippet/@Const, coluna 0). Manter esses dois casos como irmãos de #bodyBlock em vez de aninhados evita a inconsistência de highlight entre snippets que existia antes.",
+      "begin": "^(@)(Snippet)\\b",
+      "beginCaptures": {
+        "1": { "name": "keyword.control.directive.viken" }
+      },
+      "end": "(?=^\\s*@Body\\b|^@(?:Header|Snippet|Const)\\b)",
+      "name": "meta.block.snippet.viken",
+      "patterns": [{ "include": "#comment" }, { "include": "#keyValue" }]
+    },
+    "bodyBlock": {
+      "comment": "O conteúdo de @Body é código arbitrário. @Body NÃO é de marco zero — begin aceita indentação ('\\s*'), já que sempre vem indentado por convenção dentro de um @Snippet. O 'end', porém, exige coluna 0 nas três diretivas que podem encerrá-lo (@Header/@Snippet/@Const) — sem isso, uma dessas três aparecendo INDENTADA dentro do próprio corpo (ex: um exemplo de código Viken colado dentro do body) seria tratada como uma diretiva de verdade em vez de texto literal, quebrando a garantia de que @Body nunca é tocado. Embutimos a gramática do TSX (via 'source.tsx') para dar highlight real ao código; os placeholders do VS Code ($0, ${...}) são resolvidos ANTES disso.",
+      "begin": "^\\s*(@)(Body)\\b",
+      "beginCaptures": {
+        "1": { "name": "keyword.control.directive.viken" }
+      },
+      "end": "(?=^@(?:Header|Snippet|Const)\\b)",
+      "name": "meta.block.body.viken",
+      "contentName": "meta.embedded.block.tsx",
+      "patterns": [{ "include": "#placeholder" }, { "include": "source.tsx" }]
+    }
+  }
+}

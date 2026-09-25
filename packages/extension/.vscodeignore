@@ -1,0 +1,36 @@
+# Source
+source/
+
+# Build configuration
+tsconfig.json
+tsdown.config.ts
+
+# Dependencies
+node_modules/
+
+# Source maps
+**/*.map
+
+# Runtime bundle
+!dist/*.cjs
+
+# Build artifacts
+**/.turbo/
+
+# Tests
+.vscode-test/
+test/
+tests/
+
+# Editor / repository
+.vscode/
+.github/
+.git/
+.gitignore
+
+# Local macOS files
+.DS_Store
+**/.DS_Store
+
+# Packages
+*.vsix
